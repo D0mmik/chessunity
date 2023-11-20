@@ -10,16 +10,16 @@ public class Knight : Figurka
         this.barva = color;
     }
 
-    public override List<Tah> GetAvailableMoves(Board board)
+    public override List<IMove> GetAvailableMoves(Board board)
     {
-        List<Tah> tahy = new();
+        List<IMove> tahy = new();
         
         TryAddMove(position + new XY(1,2));
         TryAddMove(position + new XY(2,1));
         TryAddMove(position + new XY(2,-1));
         TryAddMove(position + new XY(1,-2));
         TryAddMove(position + new XY(-1,-2));
-        TryAddMove(position + new XY(-2,-2));
+        TryAddMove(position + new XY(-2,-1));
         TryAddMove(position + new XY(-2,1));
         TryAddMove(position + new XY(-1,2));
         
@@ -31,10 +31,10 @@ public class Knight : Figurka
                 return;
             
             Figurka enemy = board.GetAtPos(end);
-            if (enemy != null && enemy.barva != barva)
+            if (enemy != null && enemy.barva == barva)
                 return;
             
-            tahy.Add(new(position, end, enemy));
+            tahy.Add(new StandardMove(position, end));
         }
         
     }

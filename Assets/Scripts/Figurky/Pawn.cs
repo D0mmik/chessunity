@@ -1,18 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Pawn : MonoBehaviour
+public class Pawn : Figurka
 {
-    // Start is called before the first frame update
-    void Start()
+    public Pawn(XY position, Barva barva)
     {
-        
+        this.position = position;
+        this.barva = barva;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override List<IMove> GetAvailableMoves(Board board)
     {
+        List<IMove> tahy = new();
+
+        int yDirection = barva == Barva.White ? 1 : -1;
+
+
+        TryAddMove(position + new XY(0,yDirection), false);
         
+        if ((barva == Barva.White && position.y == 1) ||
+            (barva == Barva.Black && position.y == board.boardSize - 2))
+            TryAddMove(position + new XY(0,yDirection * 2), false);
+
+        TryAddMove(position + new XY(1,yDirection), true);
+        TryAddMove(position + new XY(-1, yDirection), true);
+
+        return tahy;
+        
+        void TryAddMove(XY end, bool requireKill)
+        {
+            if(!board.IsPosValid(end))
+                return;
+            
+            Figurka enemy = board.GetAtPos(end);
+
+            if (requireKill == (enemy != null && enemy.barva == barva))
+                tahy.Add(new StandardMove(position, end));
+        }
     }
+
 }
